@@ -2018,7 +2018,7 @@ char *mus_getcwd(void)
   int i, path_max = 0;
   char *pwd = NULL, *res = NULL;
   if (saved_cwd) return(saved_cwd);
-#ifndef _MSC_VER
+#if !defined(_MSC_VER) && !defined(__MINGW32__)
   path_max = pathconf("/", _PC_PATH_MAX);
 #endif
   if (path_max < 1024)

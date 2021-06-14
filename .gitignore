@@ -22,6 +22,7 @@ Makefile
 
 # Project specific
 
+build/
 debug/*
 release/*
 src/SndLibShuriken/config.log

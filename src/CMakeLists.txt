@@ -82,6 +82,12 @@ find_path(aubio_INCLUDE_DIR
 )
 target_include_directories(shuriken PRIVATE ${aubio_INCLUDE_DIR})
 
+find_library(rubberband NAMES librubberband.a)
+find_path(rubberband_INCLUDE_DIR
+  NAMES rubberband/RubberBandStretcher.h
+)
+target_include_directories(shuriken PRIVATE ${rubberband_INCLUDE_DIR})
+
 
 target_link_libraries(shuriken
     PRIVATE
@@ -93,6 +99,7 @@ target_link_libraries(shuriken
         juce::juce_events
         SndLib
         aubio
+        rubberband
 
     PUBLIC
         juce::juce_recommended_config_flags

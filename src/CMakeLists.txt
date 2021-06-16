@@ -17,6 +17,7 @@ cmake_minimum_required(VERSION 3.15)
 # directories, and the current project version. This is a standard CMake command.
 
 project(shuriken VERSION 0.0.1)
+find_package(PkgConfig REQUIRED)
 add_subdirectory(JUCE)
 add_subdirectory(SndLibShuriken)
 
@@ -34,7 +35,7 @@ juce_add_console_app(shuriken
 # JuceHeader is to include all the JUCE module headers for a particular target; if you're happy to
 # include module headers directly, you probably don't need to call this.
 
-# juce_generate_juce_header(ConsoleAppExample)
+juce_generate_juce_header(shuriken)
 
 # `target_sources` adds source files to a target. We pass the target that needs the sources as the
 # first argument, then a visibility parameter for the sources which should normally be PRIVATE.
@@ -76,18 +77,11 @@ target_compile_definitions(shuriken
 # resolved automatically. If you'd generated a binary data target above, you would need to link to
 # it here too. This is a standard CMake command.
 
-find_library(aubio NAMES libaubio.a)
-find_path(aubio_INCLUDE_DIR
-  NAMES aubio/aubio.h
-)
-target_include_directories(shuriken PRIVATE ${aubio_INCLUDE_DIR})
-
-find_library(rubberband NAMES librubberband.a)
-find_path(rubberband_INCLUDE_DIR
-  NAMES rubberband/RubberBandStretcher.h
-)
-target_include_directories(shuriken PRIVATE ${rubberband_INCLUDE_DIR})
-
+pkg_check_modules(AUBIO REQUIRED IMPORTED_TARGET aubio)
+pkg_check_modules(LIBLO REQUIRED IMPORTED_TARGET liblo)
+pkg_check_modules(RUBBERBAND REQUIRED IMPORTED_TARGET rubberband)
+pkg_check_modules(SAMPLERATE REQUIRED IMPORTED_TARGET samplerate)
+pkg_check_modules(SNDFILE REQUIRED IMPORTED_TARGET sndfile)
 
 target_link_libraries(shuriken
     PRIVATE
@@ -98,8 +92,11 @@ target_link_libraries(shuriken
         juce::juce_data_structures
         juce::juce_events
         SndLib
-        aubio
-        rubberband
+        PkgConfig::AUBIO
+        PkgConfig::LIBLO
+        PkgConfig::RUBBERBAND
+        PkgConfig::SAMPLERATE
+        PkgConfig::SNDFILE
 
     PUBLIC
         juce::juce_recommended_config_flags

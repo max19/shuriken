@@ -13,12 +13,6 @@ include(JUCEUtils.cmake)
 
 juce_disable_default_flags()
 
-# set_directory_properties(PROPERTIES
-    # JUCE_COMPANY_NAME       "JUCE"
-    # JUCE_COMPANY_WEBSITE    "juce.com"
-    # JUCE_COMPANY_EMAIL      "info@juce.com"
-    # JUCE_COMPANY_COPYRIGHT  "Copyright (c) 2020 - Raw Material Software Limited")
-
 set(CMAKE_CXX_EXTENSIONS FALSE)
 
 find_package(ASIOSDK REQUIRED)
@@ -44,3 +38,7 @@ target_link_libraries(JUCECustom
 		juce::juce_events
 		juce::juce_recommended_config_flags
 		juce::juce_recommended_warning_flags)
+
+# Set up DEBUG, NDEBUG, JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED macros on things that link to this.
+# Don't plan to do much interference otherwise.
+_juce_add_standard_defs(JUCECustom)

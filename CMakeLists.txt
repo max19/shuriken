@@ -48,7 +48,6 @@ add_subdirectory(src)
 find_package(PkgConfig REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(Qt5 COMPONENTS Widgets OpenGL REQUIRED)
-find_package(ASIOSDK REQUIRED)
 
 pkg_check_modules(AUBIO REQUIRED IMPORTED_TARGET aubio)
 pkg_check_modules(FFTW3F REQUIRED IMPORTED_TARGET fftw3F)

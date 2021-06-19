@@ -78,6 +78,10 @@ target_link_libraries(shuriken
         juce::juce_recommended_config_flags
         )
 
+target_sources(shuriken
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/resources.qrc)
+
 target_include_directories(shuriken
         PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}

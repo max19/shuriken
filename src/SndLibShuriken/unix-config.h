@@ -1,8 +1,9 @@
+/* unix-config.h.  Generated from unix-config.h.in by configure.  */
 #ifndef UNIX_CONFIG_H
 #define UNIX_CONFIG_H
 
-#undef WORDS_BIGENDIAN
-#undef SIZEOF_VOID_P
+/* #undef WORDS_BIGENDIAN */
+#define SIZEOF_VOID_P sizeof(void *)
 #undef HAVE_OSS
 #undef HAVE_ALSA
 #undef MUS_JACK
@@ -14,6 +15,6 @@
 #undef HAVE_RUBY
 #undef HAVE_FORTH
 
-#undef HAVE_GSL
+/* #undef HAVE_GSL */
 
 #endif

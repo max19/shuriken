@@ -36,7 +36,9 @@ WaveGraphicsView::WaveGraphicsView( QWidget* parent ) :
     setViewport( new QGLWidget( QGLFormat(QGL::SampleBuffers) ) );
     setViewportUpdateMode( QGraphicsView::FullViewportUpdate );
 
-#if QT_VERSION >= 0x040700  // Qt 4.7 or greater
+#if QT_VERSION_MAJOR >= 5
+    setRenderHint( QPainter::Antialiasing, true );
+#elif QT_VERSION >= 0x040700  // Qt 4.7 or greater
     setRenderHint( QPainter::HighQualityAntialiasing, true );
 #else
     setRenderHint( QPainter::HighQualityAntialiasing, false );
@@ -46,15 +48,15 @@ WaveGraphicsView::WaveGraphicsView( QWidget* parent ) :
     setBackgroundBrush( Qt::gray );
     setCacheMode( CacheBackground );
 
-    m_scene = new WaveGraphicsScene( 0.0, 0.0, 1024.0, 768.0 );
-    setScene( m_scene );
+    m_scene = std::make_unique<WaveGraphicsScene>( 0.0, 0.0, 1024.0, 768.0 );
+    setScene( m_scene.get() );
 }
 
 
 
 WaveGraphicsScene* WaveGraphicsView::getScene() const
 {
-    return m_scene;
+    return m_scene.get();
 }
 
 

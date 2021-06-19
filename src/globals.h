@@ -23,8 +23,7 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
-#include <QGraphicsItem>
-
+#include <string>
 
 #define APPLICATION_NAME            "Shuriken"
 #define JUCE_JACK_CLIENT_NAME       APPLICATION_NAME
@@ -58,9 +57,9 @@ namespace OutputChannels
 
 namespace UserTypes
 {
-    const int WAVEFORM       = QGraphicsItem::UserType + 1;
-    const int SLICE_POINT    = QGraphicsItem::UserType + 2;
-    const int LOOP_MARKER    = QGraphicsItem::UserType + 3;
+    const int WAVEFORM       = 1;//QGraphicsItem::UserType + 1;
+    const int SLICE_POINT    = 2;//QGraphicsItem::UserType + 2;
+    const int LOOP_MARKER    = 3;//QGraphicsItem::UserType + 3;
 }
 
 
@@ -78,7 +77,7 @@ namespace ZValues
 
 namespace BpmRuler
 {
-    const qreal HEIGHT = 18.0;
+    const double HEIGHT = 18.0;
 }
 
 
@@ -97,7 +96,7 @@ namespace Jack
        and is read in:   JuceLibraryCode/modules/juce_audio_devices/native/jack_device.h
                          void getDefaultJackClientConfig (JackClientConfig &conf)
     */
-    extern QString g_clientId;
+    extern std::string g_clientId;
 }
 
 

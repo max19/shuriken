@@ -35,7 +35,7 @@ DirectoryValidator::DirectoryValidator( QObject* parent ) :
 
 
 
-QValidator::State DirectoryValidator::validate( QString& input, int& pos ) const
+QValidator::State DirectoryValidator::validate( QString& input, int& /* pos */ ) const
 {
     QDir dir( input );
     State state;

@@ -53,7 +53,7 @@ QList<int> AudioAnalyser::findOnsetFrameNums( const SharedSampleBuffer sampleBuf
     inputBuffer = new_fvec( hopSize );
 
     // Do onset detection
-    for ( int frameNum = 0; frameNum < numFrames; frameNum += hopSize )
+    for ( int frameNum = 0; frameNum < numFrames; frameNum += int(hopSize) )
     {
         fillAubioInputBuffer( inputBuffer, sampleBuffer, frameNum );
 
@@ -62,7 +62,7 @@ QList<int> AudioAnalyser::findOnsetFrameNums( const SharedSampleBuffer sampleBuf
         // If an onset is detected add a new slice point to the list
         if ( detectionResultVector->data[ onsetData ] )
         {
-            slicePointFrameNum = aubio_onset_get_last( onsetDetector );
+            slicePointFrameNum = int(aubio_onset_get_last( onsetDetector ));
             slicePointFrameNumList.append( slicePointFrameNum );
         }
     }
@@ -107,7 +107,7 @@ QList<int> AudioAnalyser::findBeatFrameNums( const SharedSampleBuffer sampleBuff
     inputBuffer = new_fvec( hopSize );
 
     // Do beat detection
-    for ( int frameNum = 0; frameNum < numFrames; frameNum += hopSize )
+    for ( int frameNum = 0; frameNum < numFrames; frameNum += int(hopSize) )
     {
         fillAubioInputBuffer( inputBuffer, sampleBuffer, frameNum );
 
@@ -116,7 +116,7 @@ QList<int> AudioAnalyser::findBeatFrameNums( const SharedSampleBuffer sampleBuff
         // If a beat of the bar (tactus) is detected add a new slice point to the list
         if ( detectionResultVector->data[ beatData ] )
         {
-            slicePointFrameNum = aubio_tempo_get_last( beatDetector );
+            slicePointFrameNum = int(aubio_tempo_get_last( beatDetector ));
             slicePointFrameNumList.append( slicePointFrameNum );
         }
     }
@@ -167,7 +167,7 @@ qreal AudioAnalyser::calcBPM( const SharedSampleBuffer sampleBuffer, const Detec
     inputBuffer = new_fvec( hopSize );
 
     // Do bpm detection
-    for ( int frameNum = 0; frameNum < numFrames; frameNum += hopSize )
+    for ( int frameNum = 0; frameNum < numFrames; frameNum += int(hopSize) )
     {
         fillAubioInputBuffer( inputBuffer, sampleBuffer, frameNum );
 
@@ -213,7 +213,7 @@ void AudioAnalyser::fillAubioInputBuffer( fvec_t* inputBuffer, const SharedSampl
     const int numFrames = sampleBuffer->getNumFrames();
     const int numChans = sampleBuffer->getNumChannels();
     const float multiplier = 1.0 / numChans;
-    const int hopSize = inputBuffer->length;
+    const int hopSize = int(inputBuffer->length);
 
     FloatVectorOperations::clear( inputBuffer->data, hopSize );
 

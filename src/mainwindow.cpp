@@ -66,10 +66,10 @@ MainWindow::MainWindow( QWidget* parent ) :
 
     if ( nsmUrl != NULL && filePath.isEmpty() )
     {
-        m_nsmThread = new NsmListenerThread();
+        m_nsmThread = std::make_unique<NsmListenerThread>();
 
         // Set JACK client name
-        Jack::g_clientId = m_nsmThread->getJackClientId();
+        Jack::g_clientId = m_nsmThread->getJackClientId().toUtf8().constData();
 
         // Create save directory and store its path for later use
         const QString savePath = m_nsmThread->getSavePath();
@@ -78,7 +78,7 @@ MainWindow::MainWindow( QWidget* parent ) :
         QDir().mkpath( savePath );
         m_currentProjectFilePath = QDir( savePath ).absoluteFilePath( fileName );
 
-        connect( m_nsmThread, SIGNAL( save() ),
+        connect( m_nsmThread.get(), SIGNAL( save() ),
                  this, SLOT( on_actionSave_Project_triggered() ),
                  Qt::BlockingQueuedConnection );
 
@@ -248,12 +248,12 @@ void MainWindow::keyPressEvent( QKeyEvent* event )
 
 void MainWindow::wheelEvent( QWheelEvent* const event )
 {
-    const int numDegrees = event->delta() / 8; // delta() returns how much mouse wheel was rotated in eighths of a degree
+    const int numDegrees = event->angleDelta().y() / 8; // angleDelta() returns how much mouse wheel was rotated in eighths of a degree
     const int numSteps = numDegrees / 15;      // Most mouse wheels work in steps of 15 degrees
 
-    if ( event->orientation() == Qt::Vertical )
+    if ( numSteps )
     {
-        const QPoint mouseViewPos = m_ui->waveGraphicsView->mapFromGlobal( event->globalPos() );
+        const QPoint mouseViewPos = m_ui->waveGraphicsView->mapFromGlobal( event->globalPosition().toPoint() );
         const QPointF mouseScenePos = m_ui->waveGraphicsView->mapToScene( mouseViewPos );
         const qreal ratio = mouseScenePos.x() / m_graphicsScene->width();
 
@@ -295,16 +295,16 @@ void MainWindow::wheelEvent( QWheelEvent* const event )
 void MainWindow::initialiseAudio()
 {
     // Read audio config file
-    ScopedPointer<XmlElement> stateXml;
+    std::unique_ptr<XmlElement> stateXml;
 
-    File configFile( AUDIO_CONFIG_FILE_PATH );
+    auto configFile= File::getCurrentWorkingDirectory().getChildFile (AUDIO_CONFIG_FILE_PATH);
     if ( configFile.existsAsFile() )
     {
         stateXml = XmlDocument::parse( configFile );
     }
 
     // Initialise the audio device manager
-    const String error = m_deviceManager.initialise( InputChannels::MAX, OutputChannels::MAX, stateXml, false );
+    const String error = m_deviceManager.initialise( InputChannels::MAX, OutputChannels::MAX, stateXml.get(), false );
 
     if ( error.isNotEmpty() )
     {
@@ -329,7 +329,7 @@ void MainWindow::setUpSampler()
         const bool isMonophonyEnabled = m_ui->actionMonophonic->isChecked();
         AudioIODevice* currentAudioDevice = m_deviceManager.getCurrentAudioDevice();
 
-        m_samplerAudioSource = new SamplerAudioSource( isMonophonyEnabled, currentAudioDevice );
+        m_samplerAudioSource = std::make_unique<SamplerAudioSource>( isMonophonyEnabled, currentAudioDevice );
 
         m_samplerAudioSource->setSamples( m_sampleBufferList, m_sampleHeader->sampleRate );
 
@@ -345,33 +345,33 @@ void MainWindow::setUpSampler()
             const RubberBandStretcher::Options options = m_optionsDialog->getStretcherOptions();
             const bool isJackSyncEnabled = m_optionsDialog->isJackSyncEnabled();
 
-            m_rubberbandAudioSource = new RubberbandAudioSource( m_samplerAudioSource, numOutputChans, options, isJackSyncEnabled );
-            m_audioSourcePlayer.setSource( m_rubberbandAudioSource );
+            m_rubberbandAudioSource = std::make_unique<RubberbandAudioSource>( m_samplerAudioSource.get(), numOutputChans, options, isJackSyncEnabled );
+            m_audioSourcePlayer.setSource( m_rubberbandAudioSource.get() );
 
             connect( m_optionsDialog, SIGNAL( transientsOptionChanged(RubberBandStretcher::Options) ),
-                     m_rubberbandAudioSource, SLOT( setTransientsOption(RubberBandStretcher::Options) ) );
+                     m_rubberbandAudioSource.get(), SLOT( setTransientsOption(RubberBandStretcher::Options) ) );
 
             connect( m_optionsDialog, SIGNAL( phaseOptionChanged(RubberBandStretcher::Options) ),
-                     m_rubberbandAudioSource, SLOT( setPhaseOption(RubberBandStretcher::Options) ) );
+                     m_rubberbandAudioSource.get(), SLOT( setPhaseOption(RubberBandStretcher::Options) ) );
 
             connect( m_optionsDialog, SIGNAL( formantOptionChanged(RubberBandStretcher::Options) ),
-                     m_rubberbandAudioSource, SLOT( setFormantOption(RubberBandStretcher::Options) ) );
+                     m_rubberbandAudioSource.get(), SLOT( setFormantOption(RubberBandStretcher::Options) ) );
 
             connect( m_optionsDialog, SIGNAL( pitchOptionChanged(RubberBandStretcher::Options) ),
-                     m_rubberbandAudioSource, SLOT( setPitchOption(RubberBandStretcher::Options) ) );
+                     m_rubberbandAudioSource.get(), SLOT( setPitchOption(RubberBandStretcher::Options) ) );
 
             connect( m_optionsDialog, SIGNAL( jackSyncToggled(bool) ),
-                     m_rubberbandAudioSource, SLOT( enableJackSync(bool) ) );
+                     m_rubberbandAudioSource.get(), SLOT( enableJackSync(bool) ) );
 
             on_checkBox_TimeStretch_toggled( m_ui->checkBox_TimeStretch->isChecked() );
         }
         else // Offline time stretch mode
         {
-            m_audioSourcePlayer.setSource( m_samplerAudioSource );
+            m_audioSourcePlayer.setSource( m_samplerAudioSource.get() );
         }
 
         m_deviceManager.addAudioCallback( &m_audioSourcePlayer );
-        m_deviceManager.addMidiInputCallback( String::empty, m_samplerAudioSource->getMidiMessageCollector() );
+        m_deviceManager.addMidiInputCallback( String(), m_samplerAudioSource->getMidiMessageCollector() );
     }
 }
 
@@ -383,7 +383,7 @@ void MainWindow::tearDownSampler()
     m_audioSourcePlayer.setSource( NULL );
 
     m_deviceManager.removeAudioCallback( &m_audioSourcePlayer );
-    m_deviceManager.removeMidiInputCallback( String::empty, m_samplerAudioSource->getMidiMessageCollector() );
+    m_deviceManager.removeMidiInputCallback( String(), m_samplerAudioSource->getMidiMessageCollector() );
 
     m_rubberbandAudioSource = NULL;
     m_samplerAudioSource = NULL;
@@ -626,12 +626,12 @@ void MainWindow::setupUI()
 
 
     // Create help form
-    m_helpForm = new HelpForm();
+    m_helpForm = std::make_unique<HelpForm>();
 
     if ( m_helpForm != NULL )
     {
-        setMaxWindowSize( m_helpForm );
-        centreWindow( m_helpForm );
+        setMaxWindowSize( m_helpForm.get() );
+        centreWindow( m_helpForm.get() );
         m_ui->actionHelp->setEnabled( true );
     }
 
@@ -2683,7 +2683,7 @@ void MainWindow::on_actionJack_Outputs_triggered()
                      this, SLOT( stopPlayback() ) );
 
             connect( dialog, SIGNAL( outputPairChanged(int,int) ),
-                     m_samplerAudioSource, SLOT( setOutputPair(int,int) ) );
+                     m_samplerAudioSource.get(), SLOT( setOutputPair(int,int) ) );
 
             dialog->exec();
         }

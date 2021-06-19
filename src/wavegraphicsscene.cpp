@@ -24,6 +24,7 @@
 #include "audioanalyser.h"
 #include "globals.h"
 #include <QDebug>
+#include <algorithm>
 
 
 //==================================================================================================
@@ -37,25 +38,25 @@ WaveGraphicsScene::WaveGraphicsScene( const qreal x, const qreal y, const qreal 
     createBpmRuler();
 
     // Set up playhead
-    m_playhead = new QGraphicsLineItem( 0.0, 0.0, 0.0, height - BpmRuler::HEIGHT );
+    m_playhead = std::make_unique<QGraphicsLineItem>( 0.0, 0.0, 0.0, height - BpmRuler::HEIGHT );
     QPen pen = QPen( Qt::red );
     pen.setCosmetic( true );
     m_playhead->setPen( pen );
     m_playhead->setZValue( ZValues::PLAYHEAD );
 
-    m_timer = new QTimeLine();
+    m_timer = std::make_unique<QTimeLine>();
     m_timer->setFrameRange( 0, 100 );
     m_timer->setCurveShape( QTimeLine::LinearCurve );
     m_timer->setUpdateInterval( 17 ); // 17ms - roughly 60 fps
 
-    m_animation = new QGraphicsItemAnimation;
-    m_animation->setItem( m_playhead );
-    m_animation->setTimeLine( m_timer );
+    m_animation = std::make_unique<QGraphicsItemAnimation>();
+    m_animation->setItem( m_playhead.get() );
+    m_animation->setTimeLine( m_timer.get() );
 
-    QObject::connect( m_timer, SIGNAL( finished() ),
+    QObject::connect( m_timer.get(), SIGNAL( finished() ),
                       this, SLOT( removePlayhead() ) );
 
-    QObject::connect( m_timer, SIGNAL( finished() ),
+    QObject::connect( m_timer.get(), SIGNAL( finished() ),
                       this, SIGNAL( playheadFinishedScrolling() ) );
 }
 
@@ -269,7 +270,7 @@ QList<WaveformItem*> WaveGraphicsScene::getSelectedWaveforms() const
             selectedItems << qgraphicsitem_cast<WaveformItem*>( item );
         }
     }
-    qSort( selectedItems.begin(), selectedItems.end(), WaveformItem::isLessThanOrderPos );
+    std::sort( selectedItems.begin(), selectedItems.end(), WaveformItem::isLessThanOrderPos );
 
     return selectedItems;
 }
@@ -507,7 +508,7 @@ QList<int> WaveGraphicsScene::getSlicePointFrameNums() const
         slicePointFrameNums.append( slicePointItem->getFrameNum() );
     }
 
-    qSort( slicePointFrameNums );
+    std::sort( slicePointFrameNums.begin(), slicePointFrameNums.end() );
 
     return slicePointFrameNums;
 }
@@ -573,7 +574,7 @@ void WaveGraphicsScene::startPlayhead( const qreal startPosX,
 
         m_playhead->setLine( 0.0, 0.0, 0.0, height() - BpmRuler::HEIGHT );
         m_playhead->setVisible( true );
-        addItem( m_playhead );
+        addItem( m_playhead.get() );
 
         if ( isLoopingDesired )
         {
@@ -930,7 +931,7 @@ void WaveGraphicsScene::connectWaveform( const SharedWaveformItem item )
 
 void WaveGraphicsScene::createBpmRuler()
 {
-    m_rulerBackground = addRect( 0.0, 0.0, width(), BpmRuler::HEIGHT, QPen( QColor(0,0,0,0) ), QBrush( Qt::darkGray ) );
+    m_rulerBackground = std::unique_ptr<QGraphicsRectItem>(addRect( 0.0, 0.0, width(), BpmRuler::HEIGHT, QPen( QColor(0,0,0,0) ), QBrush( Qt::darkGray ) ));
     m_rulerBackground->setZValue( ZValues::BPM_RULER );
 
     QGraphicsSimpleTextItem* textItem = addSimpleText( "0 BPM" );
@@ -1048,7 +1049,7 @@ void WaveGraphicsScene::slideWaveformItemIntoPlace( const int orderPos )
 
 void WaveGraphicsScene::updateSlicePointOrdering( SlicePointItem* const movedItem, const int oldFrameNum )
 {
-    qSort( m_slicePointItemList.begin(), m_slicePointItemList.end(), SlicePointItem::isLessThanFrameNum );
+    std::sort( m_slicePointItemList.begin(), m_slicePointItemList.end(), SlicePointItem::isLessThanFrameNum );
 
     SharedSlicePointItem sharedSlicePoint;
 
@@ -1086,7 +1087,7 @@ void WaveGraphicsScene::updateSlicePointOrdering( SlicePointItem* const movedIte
 
 void WaveGraphicsScene::removePlayhead()
 {
-    removeItem( m_playhead );
+    removeItem( m_playhead.get() );
     update();
 }
 

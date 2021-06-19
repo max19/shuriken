@@ -94,7 +94,7 @@ SharedSampleHeader AudioFileHandler::getSampleHeader( const QString filePath )
         sampleHeader = SharedSampleHeader( new SampleHeader );
 
         sampleHeader->sampleRate = aubio_source_get_samplerate( aubioSource );
-        sampleHeader->numChans = aubio_source_get_channels( aubioSource );
+        sampleHeader->numChans = int(aubio_source_get_channels( aubioSource ));
 
         del_aubio_source( aubioSource );
 
@@ -684,7 +684,7 @@ SharedSampleBuffer AudioFileHandler::aubioLoadFile( const char* filePath, uint_t
 
                 try
                 {
-                    sampleBuffer = SharedSampleBuffer( new SampleBuffer( numChans, numFramesToRead ) );
+                    sampleBuffer = SharedSampleBuffer( new SampleBuffer( int(numChans), int(numFramesToRead) ) );
 
                     // Read audio data from file
                     do
@@ -696,7 +696,7 @@ SharedSampleBuffer AudioFileHandler::aubioLoadFile( const char* filePath, uint_t
 
                         for ( uint_t chanNum = 0; chanNum < numChans; chanNum++ )
                         {
-                            sampleBuffer->copyFrom( chanNum, destStartFrame, sampleData->data[ chanNum ], numFramesToCopy );
+                            sampleBuffer->copyFrom( int(chanNum), int(destStartFrame), sampleData->data[ chanNum ], int(numFramesToCopy) );
                         }
 
                         startFrame += numFramesRead;

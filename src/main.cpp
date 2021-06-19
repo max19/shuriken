@@ -60,7 +60,7 @@ void messageHandler( QtMsgType messageType, const char* message )
     if ( outFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
     {
         QTextStream textStream( &outFile );
-        textStream << text << endl;
+        textStream << text << Qt::endl;
     }
 
     if ( messageType == QtFatalMsg )
@@ -73,6 +73,8 @@ void messageHandler( QtMsgType messageType, const char* message )
 
 static void setupSignalHandlers()
 {
+    // TODO AAA
+    #ifdef __linux__ 
     struct sigaction sigusr1Action;
     struct sigaction sigtermAction;
 
@@ -93,6 +95,7 @@ static void setupSignalHandlers()
     {
         qCritical() << "Failed to set up signal handler for SIGTERM";
     }
+    #endif
 }
 
 

@@ -273,8 +273,8 @@ void ShurikenSamplerVoice::controllerMoved( const int /*controllerNumber*/,
 }
 
 
-
-void ShurikenSamplerVoice::renderNextBlock( AudioSampleBuffer& outputBuffer, int startFrame, int numFrames )
+template <typename T>
+void ShurikenSamplerVoice::renderNextBlock_impl( AudioBuffer<T>& outputBuffer, int startFrame, int numFrames )
 {
     if ( const ShurikenSamplerSound* const playingSound =
          static_cast<ShurikenSamplerSound*>( getCurrentlyPlayingSound().get() ) )
@@ -285,20 +285,20 @@ void ShurikenSamplerVoice::renderNextBlock( AudioSampleBuffer& outputBuffer, int
 
         const int startChanNum = playingSound->m_outputPairNum * 2;
 
-        float* outL = outputBuffer.getWritePointer( startChanNum, startFrame );
-        float* outR = outputBuffer.getNumChannels() > 1 ?
-                      outputBuffer.getWritePointer( startChanNum + 1, startFrame ) : nullptr;
+        T* outL = outputBuffer.getWritePointer( startChanNum, startFrame );
+        T* outR = outputBuffer.getNumChannels() > 1 ?
+                  outputBuffer.getWritePointer( startChanNum + 1, startFrame ) : nullptr;
 
         const int totalnumFrames = playingSound->m_sampleBuffer->getNumFrames();
 
         while ( --numFrames >= 0 )
         {
             const int pos = (int) m_sourceSamplePosition;
-            const float alpha = (float) ( m_sourceSamplePosition - pos );
-            const float invAlpha = 1.0f - alpha;
+            const T alpha = (T) ( m_sourceSamplePosition - pos );
+            const T invAlpha = (T)1.0 - alpha;
 
-            float l = 0;
-            float r = 0;
+            T l = 0;
+            T r = 0;
 
             if ( pos + 1 < totalnumFrames )
             {
@@ -322,9 +322,9 @@ void ShurikenSamplerVoice::renderNextBlock( AudioSampleBuffer& outputBuffer, int
 
                 m_attackReleaseLevel += m_attackDelta;
 
-                if ( m_attackReleaseLevel >= 1.0f )
+                if ( m_attackReleaseLevel >= 1.0 )
                 {
-                    m_attackReleaseLevel = 1.0f;
+                    m_attackReleaseLevel = 1.0;
                     m_isInAttack = false;
                 }
             }
@@ -335,7 +335,7 @@ void ShurikenSamplerVoice::renderNextBlock( AudioSampleBuffer& outputBuffer, int
 
                 m_attackReleaseLevel += m_releaseDelta;
 
-                if ( m_attackReleaseLevel <= 0.0f )
+                if ( m_attackReleaseLevel <= 0.0 )
                 {
                     stopNote( 0.0f, false );
                     break;
@@ -361,4 +361,14 @@ void ShurikenSamplerVoice::renderNextBlock( AudioSampleBuffer& outputBuffer, int
             }
         }
     }
+}
+
+void ShurikenSamplerVoice::renderNextBlock( AudioBuffer<float>& outputBuffer, int startFrame, int numFrames )
+{
+    renderNextBlock_impl<float>(outputBuffer, startFrame, numFrames);
+}
+
+void ShurikenSamplerVoice::renderNextBlock( AudioBuffer<double>& outputBuffer, int startFrame, int numFrames )
+{
+    renderNextBlock_impl<double>(outputBuffer, startFrame, numFrames);
 }

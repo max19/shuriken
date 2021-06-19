@@ -41,13 +41,13 @@ ExportDialog::ExportDialog( QWidget* parent ) :
 
 
     // Set up input validators
-    m_directoryValidator = new DirectoryValidator();
-    m_ui->lineEdit_OutputDir->setValidator( m_directoryValidator );
+    m_directoryValidator = std::make_unique<DirectoryValidator>();
+    m_ui->lineEdit_OutputDir->setValidator( m_directoryValidator.get() );
 
-    connect( m_directoryValidator, SIGNAL( isValid(bool) ),
+    connect( m_directoryValidator.get(), SIGNAL( isValid(bool) ),
              this, SLOT( displayDirValidityText(bool) ) );
 
-    connect( m_directoryValidator, SIGNAL( isValid(bool) ),
+    connect( m_directoryValidator.get(), SIGNAL( isValid(bool) ),
              m_ui->pushButton_Create, SLOT( setDisabled(bool) ) );
 
     connect( m_ui->lineEdit_OutputDir, SIGNAL( textChanged(QString) ),

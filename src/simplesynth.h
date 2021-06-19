@@ -119,8 +119,9 @@ struct SineWaveVoice : public SynthesiserVoice
         // Not implemented
     }
 
-
-    void renderNextBlock( AudioSampleBuffer& outputBuffer, int startSample, int numSamples ) override
+private:
+    template <typename T>
+    void renderNextBlock_impl( AudioBuffer<T>& outputBuffer, int startSample, int numSamples )
     {
         if ( m_angleDelta != 0.0 )
         {
@@ -128,7 +129,7 @@ struct SineWaveVoice : public SynthesiserVoice
             {
                 while ( --numSamples >= 0 )
                 {
-                    const float currentSample = (float)( sin (m_currentAngle) * m_level * m_tailOff );
+                    const T currentSample = (T)( sin (m_currentAngle) * m_level * m_tailOff );
 
                     for ( int i = outputBuffer.getNumChannels(); --i >= 0; )
                         outputBuffer.addSample( i, startSample, currentSample );
@@ -151,7 +152,7 @@ struct SineWaveVoice : public SynthesiserVoice
             {
                 while ( --numSamples >= 0 )
                 {
-                    const float currentSample = (float)( sin (m_currentAngle) * m_level );
+                    const T currentSample = (T)( sin (m_currentAngle) * m_level );
 
                     for ( int i = outputBuffer.getNumChannels(); --i >= 0; )
                         outputBuffer.addSample( i, startSample, currentSample );
@@ -161,6 +162,16 @@ struct SineWaveVoice : public SynthesiserVoice
                 }
             }
         }
+    }
+
+public:
+    void renderNextBlock( AudioBuffer<float>& outputBuffer, int startSample, int numSamples ) override
+    {
+        renderNextBlock_impl<float>(outputBuffer, startSample, numSamples);
+    }
+    void renderNextBlock( AudioBuffer<double>& outputBuffer, int startSample, int numSamples ) override
+    {
+        renderNextBlock_impl<double>(outputBuffer, startSample, numSamples);
     }
 
 private:

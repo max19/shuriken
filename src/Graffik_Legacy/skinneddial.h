@@ -150,7 +150,7 @@ private:
 
     QPixmap* m_background;
     QPixmap* m_needle;
-    QPainter::RenderHint m_paintFlags;
+    QPainter::RenderHints m_paintFlags;
     float m_maxDeg;
 
     QPixmap* m_cacheBackground;

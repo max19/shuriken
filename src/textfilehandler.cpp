@@ -117,14 +117,14 @@ bool TextFileHandler::createProjectXmlFile( const QString filePath, const Projec
 
     File file( filePath.toLocal8Bit().data() );
 
-    return docElement.writeToFile( file, String::empty );
+    return docElement.writeTo( file );
 }
 
 
 
 bool TextFileHandler::readProjectXmlFile( const QString filePath, ProjectSettings& settings )
 {
-    ScopedPointer<XmlElement> docElement;
+    std::unique_ptr<XmlElement> docElement;
     docElement = XmlDocument::parse( File( filePath.toLocal8Bit().data() ) );
 
     bool isSuccessful = false;
@@ -257,15 +257,15 @@ bool TextFileHandler::createPathsConfigFile( const PathsConfig& config )
     File pathsConfigFile( PATHS_CONFIG_FILE_PATH );
     pathsConfigFile.create();
 
-    return docElement.writeToFile( pathsConfigFile, String::empty );
+    return docElement.writeTo( pathsConfigFile );
 }
 
 
 
 bool TextFileHandler::readPathsConfigFile( PathsConfig& config )
 {
-    ScopedPointer<XmlElement> docElement;
-    docElement = XmlDocument::parse( File( PATHS_CONFIG_FILE_PATH ) );
+    std::unique_ptr<XmlElement> docElement;
+    docElement = XmlDocument::parse( File::getCurrentWorkingDirectory().getChildFile( PATHS_CONFIG_FILE_PATH ) );
 
     bool isSuccessful = false;
 
@@ -458,7 +458,7 @@ bool TextFileHandler::createH2DrumkitXmlFile( const QString dirPath, const QStri
 
     File file( QDir( dirPath ).absoluteFilePath( "drumkit.xml" ).toLocal8Bit().data() );
 
-    return docElement.writeToFile( file, String::empty );
+    return docElement.writeTo( file );
 }
 
 

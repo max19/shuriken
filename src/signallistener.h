@@ -48,8 +48,8 @@ signals:
     void quit();
 
 private:
-    ScopedPointer<QSocketNotifier> m_sigusr1Notifier;
-    ScopedPointer<QSocketNotifier> m_sigtermNotifier;
+    std::unique_ptr<QSocketNotifier> m_sigusr1Notifier;
+    std::unique_ptr<QSocketNotifier> m_sigtermNotifier;
 
     volatile bool m_isAppQuitting;
 

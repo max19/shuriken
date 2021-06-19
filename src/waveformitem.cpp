@@ -506,7 +506,7 @@ void WaveformItem::drawWaveformFromSampleBins( QPainter* painter, qreal exposedR
 
         for ( int chanNum = 0; chanNum < numChans; chanNum++ )
         {
-            QPointF points[ numVisibleBins * 2 ];
+            QPointF points[ unsigned(numVisibleBins * 2) ];
 
             for ( int count = 0; count < numVisibleBins; count++ )
             {
@@ -544,7 +544,7 @@ void WaveformItem::drawWaveformFromSamples( QPainter* const painter, const qreal
 
     for ( int chanNum = 0; chanNum < numChans; chanNum++ )
     {
-        QPointF points[ numVisibleFrames ];
+        QPointF points[ unsigned(numVisibleFrames) ];
 
         const float* sampleData = m_sampleBuffer->getReadPointer( chanNum, firstVisibleFrame );
 

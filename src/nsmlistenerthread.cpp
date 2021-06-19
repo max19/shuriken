@@ -120,9 +120,9 @@ void NsmListenerThread::run()
 // Private Static:
 
 int NsmListenerThread::openCallback( const char* savePath,
-                                     const char* displayName,
+                                     const char* /* displayName */,
                                      const char* clientId,
-                                     char** outMessage,
+                                     char** /* outMessage */,
                                      void* userData )
 {
     NsmListenerThread* listenerThread = static_cast<NsmListenerThread*>( userData );
@@ -136,7 +136,7 @@ int NsmListenerThread::openCallback( const char* savePath,
 
 
 
-int NsmListenerThread::saveCallback( char** outMessage, void* userData )
+int NsmListenerThread::saveCallback( char** /* outMessage */, void* userData )
 {
     NsmListenerThread* listenerThread = static_cast<NsmListenerThread*>( userData );
 

@@ -124,7 +124,13 @@ public:
     void pitchWheelMoved( int newValue );
     void controllerMoved( int controllerNumber, int newValue ) override;
 
-    void renderNextBlock( AudioSampleBuffer&, int startFrame, int numFrames ) override;
+private:
+    template <typename T>
+    void renderNextBlock_impl( AudioBuffer<T>&, int startFrame, int numFrames );
+
+public:
+    void renderNextBlock( AudioBuffer<float>&, int startFrame, int numFrames ) override;
+    void renderNextBlock( AudioBuffer<double>&, int startFrame, int numFrames ) override;
 
 private:
     qreal m_pitchRatio;

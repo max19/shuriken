@@ -40,7 +40,7 @@ class SlicePointItem : public QObject, public QGraphicsPolygonItem
     Q_OBJECT
 
 public:
-    enum { Type = UserTypes::SLICE_POINT };
+    enum { Type = UserTypes::SLICE_POINT + QGraphicsItem::UserType };
 
     SlicePointItem( qreal height,
                     bool canBeMovedPastOtherSlicePoints,

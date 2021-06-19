@@ -156,13 +156,13 @@ private:
     QList<SharedSlicePointItem> m_slicePointItemList;
 
     QList<SharedGraphicsItem> m_rulerMarksList;
-    ScopedPointer<QGraphicsRectItem> m_rulerBackground;
+    std::unique_ptr<QGraphicsRectItem> m_rulerBackground;
 
     SharedSampleHeader m_sampleHeader;
 
-    ScopedPointer<QGraphicsLineItem> m_playhead;
-    ScopedPointer<QTimeLine> m_timer;
-    ScopedPointer<QGraphicsItemAnimation> m_animation;
+    std::unique_ptr<QGraphicsLineItem> m_playhead;
+    std::unique_ptr<QTimeLine> m_timer;
+    std::unique_ptr<QGraphicsItemAnimation> m_animation;
 
     bool m_isSceneAtSampleDetailLevel;
 

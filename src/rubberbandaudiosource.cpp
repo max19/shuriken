@@ -74,7 +74,7 @@ void RubberbandAudioSource::prepareToPlay( int samplesPerBlockExpected, double s
 {
     if ( m_stretcher == NULL )
     {
-        m_stretcher = new RubberBandStretcher( sampleRate, m_numChans, m_options );
+        m_stretcher = new RubberBandStretcher( sampleRate, size_t(m_numChans), m_options );
         m_stretcher->reset();
 
         m_noteTimeRatio = 1.0;
@@ -178,7 +178,7 @@ void RubberbandAudioSource::getNextAudioBlock( const AudioSourceChannelInfo& inf
         processNextAudioBlock();
     }
 
-    m_stretcher->retrieve( info.buffer->getArrayOfWritePointers(), info.numSamples );
+    m_stretcher->retrieve( info.buffer->getArrayOfWritePointers(), size_t(info.numSamples) );
 }
 
 
@@ -201,7 +201,7 @@ void RubberbandAudioSource::processNextAudioBlock()
 
         if ( m_midiBuffer.isEmpty() )
         {
-            m_stretcher->process( m_inSampleBuffer.getArrayOfReadPointers(), info.numSamples, false );
+            m_stretcher->process( m_inSampleBuffer.getArrayOfReadPointers(), size_t(info.numSamples), false );
         }
         else
         {
@@ -227,7 +227,7 @@ void RubberbandAudioSource::processNextAudioBlock()
                         m_inFloatBuffer[ chanNum ] = m_inSampleBuffer.getReadPointer( chanNum, startFrame );
                     }
 
-                    m_stretcher->process( m_inFloatBuffer, numFramesToProcess, false );
+                    m_stretcher->process( m_inFloatBuffer, size_t(numFramesToProcess), false );
                 }
 
                 if ( isEventValid )

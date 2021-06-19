@@ -20,6 +20,9 @@ Makefile
 *-build-*
 .qmake.stash
 
+# clangd
+.cache
+
 # Project specific
 
 build/

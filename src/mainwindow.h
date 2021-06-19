@@ -27,6 +27,7 @@
 #include <QList>
 #include <QUndoStack>
 #include <QActionGroup>
+#include <memory>
 #include "JuceHeader.h"
 #include "samplebuffer.h"
 #include "optionsdialog.h"
@@ -128,7 +129,7 @@ private:
     WaveGraphicsScene* m_graphicsScene;
 
     OptionsDialog* m_optionsDialog;
-    ScopedPointer<HelpForm> m_helpForm;
+    std::unique_ptr<HelpForm> m_helpForm;
     ExportDialog* m_exportDialog;
 
     AudioDeviceManager m_deviceManager;
@@ -137,8 +138,8 @@ private:
     SharedSampleHeader m_sampleHeader;
     QList<SharedSampleBuffer> m_sampleBufferList;
 
-    ScopedPointer<SamplerAudioSource> m_samplerAudioSource;
-    ScopedPointer<RubberbandAudioSource> m_rubberbandAudioSource;
+    std::unique_ptr<SamplerAudioSource> m_samplerAudioSource;
+    std::unique_ptr<RubberbandAudioSource> m_rubberbandAudioSource;
     AudioSourcePlayer m_audioSourcePlayer;
 
     QString m_lastOpenedImportDir;
@@ -151,7 +152,7 @@ private:
 
     bool m_isProjectOpen;
 
-    ScopedPointer<NsmListenerThread> m_nsmThread;
+    std::unique_ptr<NsmListenerThread> m_nsmThread;
 
     // Internal "clipboard"
     QList<SharedSampleBuffer> m_copiedSampleBuffers;

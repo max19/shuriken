@@ -20,10 +20,10 @@
 
 */
 
-#include <QString>
+#include "globals.h"
 
 
 namespace Jack
 {
-    QString g_clientId;
+    std::string g_clientId;
 }

@@ -34,7 +34,7 @@ int OfflineTimeStretcher::stretch( const SharedSampleBuffer sampleBuffer,
                                    const qreal timeRatio,
                                    const qreal pitchScale )
 {
-    RubberBandStretcher stretcher( sampleRate, numChans, options, timeRatio, pitchScale );
+    RubberBandStretcher stretcher( size_t(sampleRate), size_t(numChans), options, timeRatio, pitchScale );
 
     // Copy sample buffer to a temporary buffer
     SharedSampleBuffer tempBuffer( new SampleBuffer( *sampleBuffer.data() ) );
@@ -48,7 +48,7 @@ int OfflineTimeStretcher::stretch( const SharedSampleBuffer sampleBuffer,
     int inFrameNum = 0;
     int totalNumFramesRetrieved = 0;
 
-    stretcher.setExpectedInputDuration( origNumFrames );
+    stretcher.setExpectedInputDuration( size_t(origNumFrames) );
 
     sampleBuffer->setSize( numChans, newBufferSize );
 
@@ -58,7 +58,7 @@ int OfflineTimeStretcher::stretch( const SharedSampleBuffer sampleBuffer,
         outFloatBuffer[ chanNum ] = sampleBuffer->getWritePointer( chanNum );
     }
 
-    stretcher.study( inFloatBuffer, origNumFrames, true );
+    stretcher.study( inFloatBuffer, size_t(origNumFrames), true );
 
     while ( inFrameNum < origNumFrames )
     {
@@ -68,7 +68,7 @@ int OfflineTimeStretcher::stretch( const SharedSampleBuffer sampleBuffer,
                                        numRequired : origNumFrames - inFrameNum;
         const bool isFinal = (inFrameNum + numRequired >= origNumFrames);
 
-        stretcher.process( inFloatBuffer, numFramesToProcess, isFinal );
+        stretcher.process( inFloatBuffer, size_t(numFramesToProcess), isFinal );
 
         const int numAvailable = stretcher.available();
 
@@ -88,7 +88,7 @@ int OfflineTimeStretcher::stretch( const SharedSampleBuffer sampleBuffer,
                 }
             }
 
-            const int numRetrieved = stretcher.retrieve( outFloatBuffer, numAvailable );
+            const int numRetrieved = stretcher.retrieve( outFloatBuffer, size_t(numAvailable) );
 
             for ( int chanNum = 0; chanNum < numChans; chanNum++ )
             {
@@ -124,7 +124,7 @@ int OfflineTimeStretcher::stretch( const SharedSampleBuffer sampleBuffer,
                 }
             }
 
-            const int numRetrieved = stretcher.retrieve( outFloatBuffer, numAvailable );
+            const int numRetrieved = stretcher.retrieve( outFloatBuffer, size_t(numAvailable) );
 
             for ( int chanNum = 0; chanNum < numChans; chanNum++ )
             {

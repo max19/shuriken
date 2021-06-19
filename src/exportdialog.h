@@ -85,7 +85,7 @@ private:
 
     QString m_lastOpenedExportDir;
 
-    ScopedPointer<DirectoryValidator> m_directoryValidator;
+    std::unique_ptr<DirectoryValidator> m_directoryValidator;
 
 private slots:
     void on_checkBox_ExportAudio_clicked( bool isChecked );

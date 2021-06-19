@@ -101,12 +101,12 @@ private:
     AudioDeviceManager::AudioDeviceSetup m_originalConfig;
     int m_originalBackendIndex;
 
-    ScopedPointer<SynthAudioSource> m_synthAudioSource;
+    std::unique_ptr<SynthAudioSource> m_synthAudioSource;
     AudioSourcePlayer m_audioSourcePlayer;
 
     RubberBandStretcher::Options m_stretcherOptions;
 
-    ScopedPointer<DirectoryValidator> m_directoryValidator;
+    std::unique_ptr<DirectoryValidator> m_directoryValidator;
 
     QString m_tempDirPath;
 

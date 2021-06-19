@@ -304,10 +304,10 @@ void OptionsDialog::setTempDirPath()
     }
 
     // Set up validator
-    m_directoryValidator = new DirectoryValidator();
-    m_ui->lineEdit_TempDir->setValidator( m_directoryValidator );
+    m_directoryValidator = std::make_unique<DirectoryValidator>();
+    m_ui->lineEdit_TempDir->setValidator( m_directoryValidator.get() );
 
-    QObject::connect( m_directoryValidator, SIGNAL( isValid(bool) ),
+    QObject::connect( m_directoryValidator.get(), SIGNAL( isValid(bool) ),
                       this, SLOT( displayDirValidityText(bool) ) );
 
     m_ui->lineEdit_TempDir->setText( tempDirPath );
@@ -576,10 +576,10 @@ void OptionsDialog::disableAllWidgets()
 
 void OptionsDialog::setUpMidiInputTestSynth()
 {
-    m_synthAudioSource = new SynthAudioSource( m_deviceManager.getCurrentAudioDevice() );
-    m_audioSourcePlayer.setSource( m_synthAudioSource );
+    m_synthAudioSource = std::make_unique<SynthAudioSource>( m_deviceManager.getCurrentAudioDevice() );
+    m_audioSourcePlayer.setSource( m_synthAudioSource.get() );
     m_deviceManager.addAudioCallback( &m_audioSourcePlayer );
-    m_deviceManager.addMidiInputCallback( String::empty, &(m_synthAudioSource->m_midiCollector) );
+    m_deviceManager.addMidiInputCallback( String(), &(m_synthAudioSource->m_midiCollector) );
 }
 
 
@@ -587,7 +587,7 @@ void OptionsDialog::setUpMidiInputTestSynth()
 void OptionsDialog::tearDownMidiInputTestSynth()
 {
     m_audioSourcePlayer.setSource( NULL );
-    m_deviceManager.removeMidiInputCallback( String::empty, &(m_synthAudioSource->m_midiCollector) );
+    m_deviceManager.removeMidiInputCallback( String(), &(m_synthAudioSource->m_midiCollector) );
     m_deviceManager.removeAudioCallback( &m_audioSourcePlayer );
 }
 
@@ -622,13 +622,13 @@ void OptionsDialog::disableStretcherOptions( const RubberBandStretcher::Options 
 void OptionsDialog::saveConfig()
 {
     // Save audio setup config
-    ScopedPointer<XmlElement> stateXml( m_deviceManager.createStateXml() );
+    std::unique_ptr<XmlElement> stateXml = m_deviceManager.createStateXml();
 
-    if ( stateXml != NULL )
+    if ( stateXml )
     {
         File audioConfigFile( AUDIO_CONFIG_FILE_PATH );
         audioConfigFile.create();
-        stateXml->writeToFile( audioConfigFile, String::empty );
+        stateXml->writeTo( audioConfigFile );
     }
 
     // Save paths config
@@ -818,7 +818,7 @@ void OptionsDialog::on_comboBox_AudioDevice_activated( const QString deviceName 
         }
         else
         {
-            config.outputDeviceName = String::empty;
+            config.outputDeviceName = String();
         }
 
         if ( ! isJackAudioEnabled() )

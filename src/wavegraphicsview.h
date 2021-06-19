@@ -48,7 +48,7 @@ protected:
     void resizeEvent( QResizeEvent* event );
 
 private:
-    ScopedPointer<WaveGraphicsScene> m_scene;
+    std::unique_ptr<WaveGraphicsScene> m_scene;
 
     bool m_isViewZoomedIn;
 

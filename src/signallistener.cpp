@@ -20,10 +20,15 @@
 
 */
 
+// TODO AAA
+
 #include "signallistener.h"
 #include <unistd.h>
-#include <sys/socket.h>
 #include <QtDebug>
+
+#ifdef __linux__ 
+#include <sys/socket.h>
+#endif
 
 
 int SignalListener::sigusr1SocketID[ 2 ];
@@ -37,6 +42,7 @@ SignalListener::SignalListener( QObject* parent ) :
     QObject( parent ),
     m_isAppQuitting( false )
 {
+#ifdef __linux__ 
     if ( socketpair( AF_UNIX, SOCK_STREAM, 0, sigusr1SocketID ) )
     {
         qCritical( "Couldn't create SIGUSR1 socketpair" );
@@ -46,15 +52,16 @@ SignalListener::SignalListener( QObject* parent ) :
     {
         qCritical( "Couldn't create SIGTERM socketpair" );
     }
+#endif
 
-    m_sigusr1Notifier = new QSocketNotifier( sigusr1SocketID[ READ ], QSocketNotifier::Read, this );
+    m_sigusr1Notifier = std::make_unique<QSocketNotifier>( sigusr1SocketID[ READ ], QSocketNotifier::Read, this );
 
-    QObject::connect( m_sigusr1Notifier, SIGNAL( activated(int) ),
+    QObject::connect( m_sigusr1Notifier.get(), SIGNAL( activated(int) ),
                       this, SLOT( handleSigUsr1() ) );
 
-    m_sigtermNotifier = new QSocketNotifier( sigtermSocketID[ READ ], QSocketNotifier::Read, this );
+    m_sigtermNotifier = std::make_unique<QSocketNotifier>( sigtermSocketID[ READ ], QSocketNotifier::Read, this );
 
-    QObject::connect( m_sigtermNotifier, SIGNAL( activated(int) ),
+    QObject::connect( m_sigtermNotifier.get(), SIGNAL( activated(int) ),
                       this, SLOT( handleSigTerm() ) );
 }
 

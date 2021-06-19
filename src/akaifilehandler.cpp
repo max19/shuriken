@@ -22,6 +22,8 @@
 
 #include "akaifilehandler.h"
 #include "globals.h"
+#include <QTextStream>
+#include <QDataStream>
 #include <QFile>
 #include <QDir>
 #include <QtDebug>
@@ -138,7 +140,7 @@ bool AkaiFileHandler::writePgmFileMPC1000( QStringList sampleNames,
                 const int pos = MPC1000_PGM::HEADER_SIZE + ( padNum * MPC1000_PGM::PAD_DATA_SIZE ) + MPC1000_PGM::ATTACK_OFFSET;
 
                 QByteArray bytes;
-                bytes += quint8( envelopes.attackValues.at( padNum ) * 100 );
+                bytes += char( envelopes.attackValues.at( padNum ) * 100 );
 
                 pgmData.replace( pos, 1, bytes );
             }
@@ -148,7 +150,7 @@ bool AkaiFileHandler::writePgmFileMPC1000( QStringList sampleNames,
                 const int pos = MPC1000_PGM::HEADER_SIZE + ( padNum * MPC1000_PGM::PAD_DATA_SIZE ) + MPC1000_PGM::DECAY_OFFSET;
 
                 QByteArray bytes;
-                bytes += quint8( envelopes.releaseValues.at( padNum ) * 100 );
+                bytes += char( envelopes.releaseValues.at( padNum ) * 100 );
 
                 pgmData.replace( pos, 1, bytes );
             }
@@ -168,7 +170,7 @@ bool AkaiFileHandler::writePgmFileMPC1000( QStringList sampleNames,
                 const int pos = MPC1000_PGM::PAD_MIDI_DATA_START + padNum;
 
                 QByteArray bytes;
-                bytes += noteNum;
+                bytes += (char) noteNum;
 
                 pgmData.replace( pos, 1, bytes );
             }
@@ -178,7 +180,7 @@ bool AkaiFileHandler::writePgmFileMPC1000( QStringList sampleNames,
                 const int pos = MPC1000_PGM::MIDI_NOTE_DATA_START + noteNum;
 
                 QByteArray bytes;
-                bytes += padNum;
+                bytes += (char) padNum;
 
                 pgmData.replace( pos, 1, bytes );
             }

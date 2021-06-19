@@ -205,14 +205,6 @@ function(juce_add_module module_path)
     endif()
 
     target_include_directories(${module_name} INTERFACE ${base_path})
-	if(${module_name} STREQUAL "juce_audio_devices")
-		if(${ASIOSDK_FOUND})
-			target_include_directories(${module_name} INTERFACE ${ASIOSDK_INCLUDE_DIR})
-			message("ASIO SDK found")
-		else()
-			message("ASIO SDK not found")
-		endif()
-	endif()
 
     target_compile_definitions(${module_name} INTERFACE JUCE_MODULE_AVAILABLE_${module_name}=1)
 

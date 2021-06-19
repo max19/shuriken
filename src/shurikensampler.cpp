@@ -45,6 +45,7 @@
 
 */
 
+#include "globals.h"
 #include "shurikensampler.h"
 #include <QtDebug>
 

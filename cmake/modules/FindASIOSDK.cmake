@@ -12,17 +12,10 @@ else(WIN32)
   message(FATAL_ERROR "FindASIOSDK.cmake: Unsupported platform ${CMAKE_SYSTEM_NAME}" )
 endif(WIN32)
 
-file(GLOB results "${PROJECT_SOURCE_DIR}/../as*")
-foreach(f ${results})
-  if(IS_DIRECTORY ${f})
-    set(ASIOSDK_PATH_HINT ${ASIOSDK_PATH_HINT} ${f})
-  endif()
-endforeach()
-
 find_path(ASIOSDK_ROOT_DIR
   common/asio.h
   HINTS
-    ${ASIOSDK_PATH_HINT}
+  ${SHURIKEN_ROOT_DIR}/asiosdk
 )
 
 find_path(ASIOSDK_INCLUDE_DIR

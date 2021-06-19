@@ -20,6 +20,7 @@
 
 */
 
+#include "globals.h"
 #include "textfilehandler.h"
 #include "JuceHeader.h"
 #include "messageboxes.h"

@@ -35,4 +35,5 @@ src/SndLibShuriken/sndlib.pc
 src/SndLibShuriken/unix-config.h
 src/SndLibShuriken/makefile
 .shuriken/
+asiosdk/
 

@@ -16,7 +16,6 @@ juce_disable_default_flags()
 
 set(CMAKE_CXX_EXTENSIONS FALSE)
 
-find_package(ASIOSDK REQUIRED)
 juce_add_modules(
 	INSTALL_PATH "include/JUCE-${JUCE_VERSION}/modules"
 	ALIAS_NAMESPACE juce
@@ -28,10 +27,23 @@ juce_add_modules(
 	"${JUCE_MODULES_DIR}/juce_events")
 	
 add_library(JUCECustom STATIC)
+
 target_include_directories(JUCECustom
 	INTERFACE
 		${JUCE_MODULES_DIR}
 		${JUCE_CUSTOM_MODULES_DIR})
+
+if(WIN32)
+	find_package(ASIOSDK)
+	if(ASIOSDK_FOUND)
+		target_compile_definitions(JUCECustom PUBLIC JUCE_ASIO=1)
+		target_include_directories(JUCECustom PRIVATE ${ASIOSDK_INCLUDE_DIR})
+		message("ASIO SDK found")
+	else()
+		message("ASIO SDK not found")
+	endif()
+endif()
+
 target_link_libraries(JUCECustom
 	PRIVATE
 		juce::juce_audio_basics

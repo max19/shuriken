@@ -20,6 +20,7 @@
 
 */
 
+#include "globals.h"
 #include "nsmlistenerthread.h"
 #include <QTimer>
 #include <QApplication>

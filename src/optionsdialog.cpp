@@ -626,7 +626,7 @@ void OptionsDialog::saveConfig()
 
     if ( stateXml )
     {
-        File audioConfigFile( AUDIO_CONFIG_FILE_PATH );
+        File audioConfigFile = File::getCurrentWorkingDirectory().getChildFile(AUDIO_CONFIG_FILE_PATH);
         audioConfigFile.create();
         stateXml->writeTo( audioConfigFile );
     }

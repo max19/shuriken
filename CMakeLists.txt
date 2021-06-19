@@ -85,8 +85,7 @@ target_sources(shuriken
 
 target_include_directories(shuriken
         PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${ASIOSDK_INCLUDE_DIR})            # Needed for ASIO in JUCE
+    ${CMAKE_CURRENT_SOURCE_DIR})
 
 set_property(TARGET shuriken PROPERTY POSITION_INDEPENDENT_CODE FALSE)
 set_property(TARGET shuriken PROPERTY WIN32_EXECUTABLE TRUE)

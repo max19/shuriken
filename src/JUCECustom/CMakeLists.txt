@@ -33,6 +33,8 @@ target_include_directories(JUCECustom
 		${JUCE_MODULES_DIR}
 		${JUCE_CUSTOM_MODULES_DIR})
 
+target_compile_definitions(JUCECustom PUBLIC JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0)
+
 if(WIN32)
 	find_package(ASIOSDK)
 	if(ASIOSDK_FOUND)

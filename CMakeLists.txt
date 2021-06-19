@@ -29,21 +29,7 @@ target_compile_options(shuriken
     # More annoying stuff.
     -Wno-parentheses
     )
-
-# `target_compile_definitions` adds some preprocessor definitions to our target. In a Projucer
-# project, these might be passed in the 'Preprocessor Definitions' field. JUCE modules also make use
-# of compile definitions to switch certain features on/off, so if there's a particular feature you
-# need that's not on by default, check the module header for the correct flag to set here. These
-# definitions will be visible both to your code, and also the JUCE module code, so for new
-# definitions, pick unique names that are unlikely to collide! This is a standard CMake command.
-
-# target_compile_definitions(shuriken
-#     PRIVATE
-#         # JUCE_WEB_BROWSER and JUCE_USE_CURL would be on by default, but you might not need them.
-#         JUCE_WEB_BROWSER=0  # If you remove this, add `NEEDS_WEB_BROWSER TRUE` to the `juce_add_console_app` call
-#         JUCE_USE_CURL=0)    # If you remove this, add `NEEDS_CURL TRUE` to the `juce_add_console_app` call
-
-
+    
 add_subdirectory(src)
 
 find_package(PkgConfig REQUIRED)
@@ -52,7 +38,6 @@ find_package(Qt5 COMPONENTS Widgets OpenGL REQUIRED)
 
 pkg_check_modules(AUBIO REQUIRED IMPORTED_TARGET aubio)
 pkg_check_modules(FFTW3F REQUIRED IMPORTED_TARGET fftw3F)
-pkg_check_modules(JACK REQUIRED IMPORTED_TARGET jack)
 pkg_check_modules(LIBLO REQUIRED IMPORTED_TARGET liblo)
 pkg_check_modules(RUBBERBAND REQUIRED IMPORTED_TARGET rubberband)
 pkg_check_modules(SAMPLERATE REQUIRED IMPORTED_TARGET samplerate)
@@ -69,7 +54,6 @@ target_link_libraries(shuriken
         SndLib
         PkgConfig::AUBIO
         PkgConfig::FFTW3F
-        PkgConfig::JACK
         PkgConfig::LIBLO
         PkgConfig::RUBBERBAND
         PkgConfig::SAMPLERATE
@@ -78,6 +62,11 @@ target_link_libraries(shuriken
     PUBLIC
         juce::juce_recommended_config_flags
         )
+
+if (UNIX)
+    pkg_check_modules(JACK REQUIRED IMPORTED_TARGET jack)
+    target_link_libraries(shuriken PRIVATE PkgConfig::JACK)
+endif()
 
 target_sources(shuriken
     PRIVATE

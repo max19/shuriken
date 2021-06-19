@@ -255,7 +255,7 @@ bool TextFileHandler::createPathsConfigFile( const PathsConfig& config )
         docElement.addChildElement( element );
     }
 
-    File pathsConfigFile( PATHS_CONFIG_FILE_PATH );
+    File pathsConfigFile = File::getCurrentWorkingDirectory().getChildFile( PATHS_CONFIG_FILE_PATH );
     pathsConfigFile.create();
 
     return docElement.writeTo( pathsConfigFile );

@@ -547,7 +547,7 @@ void MainWindow::exportAs( const QString tempDirPath,
         m_samplerAudioSource->getEnvelopeSettings( envelopes );
 
         TextFileHandler::createH2DrumkitXmlFile( samplesDirPath, fileName, audioFileNames, envelopes );
-#ifdef LINUX
+#if defined(__linux__)
         const QString cdCommand  = "cd '" + outputDirPath + "'";
         const QString tarCommand = "tar --create --gzip --file '" + fileName + ".h2drumkit' '" + fileName + "'";
 

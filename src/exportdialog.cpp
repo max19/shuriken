@@ -321,8 +321,12 @@ void ExportDialog::setPlatformFileNameValidator()
 {
     QString pattern;
 
-#ifdef LINUX
+#if defined(__linux__)
     pattern = "[^/\\s]+"; // Match any character except forward slash and white space
+#elif defined(_WIN32)
+    pattern = "^[0-9a-zA-Z_\\-. ]+$";
+#else
+    static_assert(false, "Platform not found");
 #endif
 
     if ( m_ui->lineEdit_FileName->validator() != NULL )

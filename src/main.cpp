@@ -73,8 +73,7 @@ void messageHandler( QtMsgType messageType, const char* message )
 
 static void setupSignalHandlers()
 {
-    // TODO AAA
-    #ifdef __linux__ 
+    #if defined(__linux__) 
     struct sigaction sigusr1Action;
     struct sigaction sigtermAction;
 

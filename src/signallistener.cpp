@@ -26,7 +26,7 @@
 #include <unistd.h>
 #include <QtDebug>
 
-#ifdef __linux__ 
+#if defined(__linux__)
 #include <sys/socket.h>
 #endif
 
@@ -42,7 +42,7 @@ SignalListener::SignalListener( QObject* parent ) :
     QObject( parent ),
     m_isAppQuitting( false )
 {
-#ifdef __linux__ 
+#if defined(__linux__)
     if ( socketpair( AF_UNIX, SOCK_STREAM, 0, sigusr1SocketID ) )
     {
         qCritical( "Couldn't create SIGUSR1 socketpair" );

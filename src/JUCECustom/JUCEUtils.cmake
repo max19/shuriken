@@ -303,9 +303,3 @@ function(juce_disable_default_flags)
         endforeach()
     endforeach()
 endfunction()
-
-# ==================================================================================================
-function(juce_configure_target target)
-
-endfunction()
-

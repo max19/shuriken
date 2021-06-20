@@ -44,7 +44,6 @@ pkg_check_modules(SNDFILE REQUIRED IMPORTED_TARGET sndfile)
 
 target_link_libraries(shuriken
     PRIVATE
-        # ConsoleAppData            # If you'd created a binary data target, you'd link to it here
         JUCECustom
         Qt5::Core
         Qt5::Widgets

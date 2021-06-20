@@ -24,6 +24,7 @@
 #define GLOBALS_H
 
 #include <string>
+#include <QGraphicsItem>
 
 #define APPLICATION_NAME            "Shuriken"
 #define JUCE_JACK_CLIENT_NAME       APPLICATION_NAME
@@ -57,9 +58,9 @@ namespace OutputChannels
 
 namespace UserTypes
 {
-    const int WAVEFORM       = 1;//QGraphicsItem::UserType + 1;
-    const int SLICE_POINT    = 2;//QGraphicsItem::UserType + 2;
-    const int LOOP_MARKER    = 3;//QGraphicsItem::UserType + 3;
+    const int WAVEFORM       = QGraphicsItem::UserType + 1;
+    const int SLICE_POINT    = QGraphicsItem::UserType + 2;
+    const int LOOP_MARKER    = QGraphicsItem::UserType + 3;
 }
 
 

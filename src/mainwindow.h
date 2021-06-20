@@ -40,8 +40,11 @@
 #include "waveformitem.h"
 #include "helpform.h"
 #include "exportdialog.h"
-#include "nsmlistenerthread.h"
 #include "jackoutputsdialog.h"
+
+#if defined(__linux__)
+#include "nsmlistenerthread.h"
+#endif
 
 
 namespace Ui
@@ -152,7 +155,11 @@ private:
 
     bool m_isProjectOpen;
 
+#if defined(__linux__)
     std::unique_ptr<NsmListenerThread> m_nsmThread;
+#else
+    std::unique_ptr<int> m_nsmThread; // dummy
+#endif
 
     // Internal "clipboard"
     QList<SharedSampleBuffer> m_copiedSampleBuffers;

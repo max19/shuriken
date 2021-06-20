@@ -161,11 +161,13 @@ void MainWindow::saveProject( const QString filePath, const bool isNsmSessionExp
 
         if ( m_nsmThread != NULL )
         {
+#if defined(__linux__)
             if ( m_undoStack.isClean() && ! isNsmSessionExport )
             {
                 m_nsmThread->sendMessage( NsmListenerThread::MSG_IS_CLEAN );
                 m_ui->actionSave_Project->setEnabled( false );
             }
+#endif
         }
         else
         {
@@ -451,11 +453,13 @@ void MainWindow::importAudioFile( const QString filePath )
             m_ui->statusBar->showMessage( message );
         }
 
+#if defined(__linux__)
         if ( m_nsmThread != NULL )
         {
             m_nsmThread->sendMessage( NsmListenerThread::MSG_IS_DIRTY );
             m_ui->actionSave_Project->setEnabled( true );
         }
+#endif
 
         m_isProjectOpen = true;
 
@@ -731,11 +735,13 @@ void MainWindow::openProjectDialog()
     {
         openProject( filePath );
 
+#if defined(__linux__)
         if ( m_nsmThread != NULL )
         {
             m_nsmThread->sendMessage( NsmListenerThread::MSG_IS_DIRTY );
             m_ui->actionSave_Project->setEnabled( true );
         }
+#endif
 
         m_lastOpenedProjDir = QFileInfo( filePath ).absolutePath();
     }

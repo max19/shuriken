@@ -61,6 +61,7 @@ MainWindow::MainWindow( QWidget* parent ) :
         filePath = QApplication::arguments().at( 1 );
     }
 
+#if defined(__linux__)
     // Check if Non Session Manager is running
     const char* nsmUrl = getenv( "NSM_URL" );
 
@@ -84,13 +85,14 @@ MainWindow::MainWindow( QWidget* parent ) :
 
         m_nsmThread->start();
     }
+#endif
 
     // Set up audio and user interface
     initialiseAudio();
     setupUI();
 
     // Load project or audio file if necessary
-    if ( nsmUrl != NULL && filePath.isEmpty() )
+    if ( m_nsmThread && filePath.isEmpty() )
     {
         if ( QFileInfo( m_currentProjectFilePath ).exists() )
         {
@@ -127,11 +129,13 @@ MainWindow::~MainWindow()
         }
     }
 
+#if defined(__linux__)
     if ( m_nsmThread != NULL )
     {
         m_nsmThread->quit();
         m_nsmThread->wait( 2000 );
     }
+#endif
 
     delete m_ui;
 }
@@ -1499,6 +1503,7 @@ void MainWindow::updateRedoText( const QString text )
 
 void MainWindow::notifyNsmOfUnsavedChanges( const bool isClean )
 {
+#if defined(__linux__)
     if ( m_nsmThread != NULL )
     {
         if ( isClean )
@@ -1510,6 +1515,7 @@ void MainWindow::notifyNsmOfUnsavedChanges( const bool isClean )
             m_nsmThread->sendMessage( NsmListenerThread::MSG_IS_DIRTY );
         }
     }
+#endif
 }
 
 

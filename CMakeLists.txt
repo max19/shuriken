@@ -38,7 +38,6 @@ find_package(Qt5 COMPONENTS Widgets OpenGL REQUIRED)
 
 pkg_check_modules(AUBIO REQUIRED IMPORTED_TARGET aubio)
 pkg_check_modules(FFTW3F REQUIRED IMPORTED_TARGET fftw3F)
-pkg_check_modules(LIBLO REQUIRED IMPORTED_TARGET liblo)
 pkg_check_modules(RUBBERBAND REQUIRED IMPORTED_TARGET rubberband)
 pkg_check_modules(SAMPLERATE REQUIRED IMPORTED_TARGET samplerate)
 pkg_check_modules(SNDFILE REQUIRED IMPORTED_TARGET sndfile)
@@ -54,7 +53,6 @@ target_link_libraries(shuriken
         SndLib
         PkgConfig::AUBIO
         PkgConfig::FFTW3F
-        PkgConfig::LIBLO
         PkgConfig::RUBBERBAND
         PkgConfig::SAMPLERATE
         PkgConfig::SNDFILE
@@ -65,7 +63,8 @@ target_link_libraries(shuriken
 
 if (UNIX)
     pkg_check_modules(JACK REQUIRED IMPORTED_TARGET jack)
-    target_link_libraries(shuriken PRIVATE PkgConfig::JACK)
+    pkg_check_modules(LIBLO REQUIRED IMPORTED_TARGET liblo)
+    target_link_libraries(shuriken PRIVATE PkgConfig::JACK PkgConfig::LIBLO)
 endif()
 
 target_sources(shuriken

@@ -38,7 +38,6 @@ target_sources(shuriken
         ${CMAKE_CURRENT_SOURCE_DIR}/confirmbpmdialog.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/offlinetimestretcher.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/wavegraphicsscene.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/nsmlistenerthread.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/jackoutputsdialog.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/sampleutils.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/calcbpmdialog.cpp
@@ -74,8 +73,14 @@ target_sources(shuriken
         ${CMAKE_CURRENT_SOURCE_DIR}/confirmbpmdialog.h
         ${CMAKE_CURRENT_SOURCE_DIR}/offlinetimestretcher.h
         ${CMAKE_CURRENT_SOURCE_DIR}/wavegraphicsscene.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/nonlib/nsm.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/nsmlistenerthread.h
         ${CMAKE_CURRENT_SOURCE_DIR}/jackoutputsdialog.h
         ${CMAKE_CURRENT_SOURCE_DIR}/sampleutils.h
         ${CMAKE_CURRENT_SOURCE_DIR}/calcbpmdialog.h)
+
+if(UNIX)
+    target_sources(shuriken
+        PRIVATE
+            ${CMAKE_CURRENT_SOURCE_DIR}/nsmlistenerthread.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/nsmlistenerthread.h
+            ${CMAKE_CURRENT_SOURCE_DIR}/nonlib/nsm.h)
+endif()
